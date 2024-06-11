@@ -54,6 +54,9 @@ passport.use(new FacebookStrategy({
         email,
         facebookId: profile.id
       });
+    } else {
+      user.facebookId = profile.id;
+      await user.save();
     }
     return done(null, user);
   } catch (error: any) {
@@ -78,6 +81,9 @@ passport.use(new GoogleStrategy({
         email,
         googleId: profile.id
       });
+    } else {
+      user.googleId = profile.id;
+      await user.save();
     }
     return done(null, user);
   } catch (error: any) {

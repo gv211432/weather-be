@@ -2,6 +2,7 @@ import { Router } from "express";
 import { getClientIp } from "../../utils/basic";
 import { getIpInfo } from "../../utils/user";
 import { digestError } from "../../service/logger";
+import { auth } from "../../service/user";
 const router = Router();
 
 /**
@@ -20,22 +21,18 @@ const router = Router();
  *               type: string
  *             data:
  *               type: object
- *       401:
- *         description: Not authenticated.
+ *             error:
+ *               type: string
  */
-router.get('/user/profile', async (req, res) => {
+router.get('/user/profile', auth, async (req, res) => {
   try {
     console.log({ ip: getClientIp(req) });
     console.log({ info: await getIpInfo(getClientIp(req)) });
 
-    if (!req.isAuthenticated()) {
-      return res.json({ error: 'Not authenticated' });
-    }
-    
-    res.json({ message: 'Authenticated', data: req.user });
+    return res.json({ message: 'Authenticated', data: req.user });
   } catch (error: any) {
     await digestError('Error getting user profile', error);
-    res.json({ error: 'Error getting user profile' });
+    return res.json({ error: 'Error getting user profile' });
   }
 });
 

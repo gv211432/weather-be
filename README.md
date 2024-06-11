@@ -1,3 +1,6 @@
+![GitHub](https://img.shields.io/github/license/GV211432/weather-be) ![GitHub issues](https://img.shields.io/github/issues-raw/GV211432/weather-be) ![GitHub Repo stars](https://img.shields.io/github/stars/GV211432/weather-be?style=social)
+
+
 # Project Setup Guide
 
 This guide provides instructions for setting up and running our project. Follow these steps to get started:
@@ -101,3 +104,35 @@ To run the project in developer mode, follow these steps:
      npm run dev
      ```
    - This will start your application in development mode, allowing you to see real-time changes as you edit the code.
+
+
+# How to Authenticate with Facebook and Google 
+
+1. ### Authenticate with Facebook:
+   - Click on the "Facebook Auth" link.
+   - You'll be redirected to the Facebook login page.
+   - Enter your Facebook credentials and click on "Log In."
+   - You'll be redirected back to the application with a success message.
+   - Don't click on Try button, its not redirecting to the home page.
+
+![How to auth with Facebook](./docs/img/facebook.jpg)
+
+2. ### Authenticate with Google:
+   - Click on the "Google Auth" link.
+   - You'll be redirected to the Google login page.
+   - Enter your Google credentials and click on "Next."
+   - Click on "Allow" to grant permission to the application.
+   - You'll be redirected back to the application with a success message.
+
+![How to auth with Google](./docs/img/google.jpg)
+
+3. ### Once authenticated, you can view the user's profile details and weather information.
+
+![Check Auth Status](./docs/img/profile.jpg)
+
+4. ### Check the weather information for a specific city by entering the city name in the search bar.
+   - Once you are logged in, you can get the weather information
+   - You can specify the longitude and latitude of the city to get the weather information.
+   - If not specified, the weather information will be fetched based on the user's ip address.
+
+![Weather Info](./docs/img/weather.jpg)

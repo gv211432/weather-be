@@ -3,6 +3,7 @@ import axios from 'axios';
 import { getIpInfo } from "../../utils/user";
 import { getClientIp } from "../../utils/basic";
 import { digestError } from "../../service/logger";
+import { auth } from "../../service/user";
 const router = Router();
 
 
@@ -33,10 +34,11 @@ const router = Router();
  *               type: string
  *             data:
  *               type: object
- *       401:
- *         description: Not authenticated.
+ *             error:
+ *               type: string
  */
-router.get('/weather/info', async (req, res) => {
+
+router.get('/weather/info', auth, async (req, res) => {
   try {
     const { lat, lon } = req.query;
     console.log({ lat, lon });
@@ -48,28 +50,27 @@ router.get('/weather/info', async (req, res) => {
       weatherApiUrl = `${process.env.WEATHER_BASE_URL}/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}`;
     } else {
       location = await getIpInfo(getClientIp(req));
-      console.log({ location });
-      weatherApiUrl = `${process.env.WEATHER_BASE_URL}/data/2.5/weather?q=${location?.city},${location?.country}&appid=${apiKey}`;
-      // Replace this with your actual user
       if (!location) throw new Error('Location not found');
+
+      weatherApiUrl = `${process.env.WEATHER_BASE_URL}/data/2.5/weather?q=${location?.city},${location?.country}&appid=${apiKey}`;
     }
 
     const weatherData = (await axios.get(weatherApiUrl)).data;
 
-    res.json({
+    return res.json({
       message: "Weather information of the authenticated user's location.",
       data: {
         ...location,
         temperature: weatherData.main.temp,
         description: weatherData.weather[0].description,
-        icon: `http://openweathermap.org/img/wn/${weatherData.weather[0].icon}.png`,
+        icon: `${process.env.WEATHER_BASE_URL}/img/wn/${weatherData.weather[0].icon}.png`,
         all: weatherData
       }
     });
 
   } catch (error: any) {
     await digestError('Error fetching weather data', error);
-    res.status(500).send('Error fetching weather data');
+    return res.json({ error: 'Error fetching weather data' });
   }
 });
 

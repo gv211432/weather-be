@@ -25,14 +25,18 @@ const router = Router();
  *              type: string
  *              description: User's password
  * 
- *     responses:
+*     responses:
  *       200:
- *         description: |
- *            {
- *              "message": "Login successful",
- *              "data" ?: [],
- *              "errors" ?: []  
- *            }
+ *         description: Logges in user.
+ *         schema:
+ *           type: object
+ *           properties:
+ *             message:
+ *               type: string
+ *             data:
+ *               type: object
+ *             error:
+ *               type: string
  */
 
 router.post('/user/login', (req: Request, res: Response, next) => {
@@ -41,13 +45,13 @@ router.post('/user/login', (req: Request, res: Response, next) => {
       return next(err);
     }
     if (!user) {
-      return res.status(400).json({ message: info.message });
+      return res.json({ error: info.message });
     }
     req.logIn(user, (err) => {
       if (err) {
         return next(err);
       }
-      return res.json({ message: 'Login successful', data: filterUser(user) });
+      return res.json({ message: 'Login successful!', data: filterUser(user) });
     });
   })(req, res, next);
 });
