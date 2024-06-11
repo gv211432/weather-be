@@ -1,6 +1,8 @@
 import { Router } from "express";
 import axios from 'axios';
 import { getIpInfo } from "../../utils/user";
+import { getClientIp } from "../../utils/basic";
+import { digestError } from "../../service/logger";
 const router = Router();
 
 
@@ -8,7 +10,7 @@ const router = Router();
  * @swagger
  * /api/weather/info:
  *   get:
- *     summary: Get the weather information of the authenticated user's location
+ *     summary: If the user is authenticated, get the weather information of the user's location. If not, get the weather information of the user's IP address.
  *     tags: [Weather]
  *     parameters:
  *       - in: query
@@ -45,7 +47,7 @@ router.get('/weather/info', async (req, res) => {
     if (lat && lon) {
       weatherApiUrl = `${process.env.WEATHER_BASE_URL}/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}`;
     } else {
-      location = await getIpInfo("::1");
+      location = await getIpInfo(getClientIp(req));
       console.log({ location });
       weatherApiUrl = `${process.env.WEATHER_BASE_URL}/data/2.5/weather?q=${location?.city},${location?.country}&appid=${apiKey}`;
       // Replace this with your actual user
@@ -65,8 +67,8 @@ router.get('/weather/info', async (req, res) => {
       }
     });
 
-  } catch (error) {
-    console.error(error);
+  } catch (error: any) {
+    await digestError('Error fetching weather data', error);
     res.status(500).send('Error fetching weather data');
   }
 });

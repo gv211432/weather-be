@@ -1,7 +1,6 @@
 import { Router } from 'express';
 import passport from 'passport';
 import cors from 'cors';
-import { corsOptions } from '../../../config/cors';
 
 const router = Router();
 
@@ -33,9 +32,9 @@ router.get('/user/auth/google', passport.authenticate('google', { scope: ['profi
  *           If successful, redirects to /profile.
  *           If failed, redirects to /login.
  */
-router.get('/user/auth/google/callback', passport.authenticate('google', {
+router.get('/user/auth/google/callback', cors(), passport.authenticate('google', {
   successRedirect: '/api/user/profile',
-  failureRedirect: '/api/user/login'
+  failureRedirect: '/api/user/login',
 }));
 
 export default router;

@@ -1,5 +1,6 @@
 import { Model, DataTypes } from 'sequelize';
 import dbConnection from '../database/postgres';
+import { digestError } from '../service/logger';
 
 
 class User extends Model {
@@ -68,7 +69,7 @@ export const syncUser = async () => {
   try {
     await User.count();
     console.log('User model synchronized successfully.');
-  } catch (error) {
-    console.error('Unable to sync User model:', error);
+  } catch (error: any) {
+    await digestError('Unable to sync User model:', error);
   }
 };

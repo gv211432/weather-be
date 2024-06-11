@@ -6,6 +6,7 @@ import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import bcrypt from 'bcryptjs';
 import { Router } from 'express';
 import User from '../models/User';
+import { digestError } from './logger';
 
 const router = Router();
 
@@ -30,7 +31,8 @@ passport.use(new LocalStrategy({
       return done(null, false, { message: 'Incorrect password.' });
     }
     return done(null, user);
-  } catch (error) {
+  } catch (error: any) {
+    await digestError('Error in local strategy', error);
     return done(error);
   }
 }));
@@ -40,7 +42,7 @@ passport.use(new LocalStrategy({
 passport.use(new FacebookStrategy({
   clientID: process.env.FACEBOOK_CLIENT_ID,
   clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
-  callbackURL: '/api/user/auth/facebook/callback',
+  callbackURL: `${process.env.OAUTH_REDIRECT_BASEURL}/api/user/auth/facebook/callback`,
   profileFields: ['id', 'displayName', 'emails']
 } as unknown as any, async (accessToken: string, refreshToken: string, profile: any, done: any) => {
   try {
@@ -54,7 +56,8 @@ passport.use(new FacebookStrategy({
       });
     }
     return done(null, user);
-  } catch (error) {
+  } catch (error: any) {
+    await digestError('Error in facebook strategy', error);
     return done(error);
   }
 }));
@@ -64,7 +67,7 @@ passport.use(new FacebookStrategy({
 passport.use(new GoogleStrategy({
   clientID: process.env.GOOGLE_CLIENT_ID ?? "",
   clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "",
-  callbackURL: '/api/user/auth/google/callback'
+  callbackURL: `${process.env.OAUTH_REDIRECT_BASEURL}/api/user/auth/google/callback`
 }, async (accessToken: string, refreshToken: string, profile: any, done: any) => {
   try {
     const email = profile.emails[0].value;
@@ -77,7 +80,8 @@ passport.use(new GoogleStrategy({
       });
     }
     return done(null, user);
-  } catch (error) {
+  } catch (error: any) {
+    await digestError('Error in google strategy', error);
     return done(error);
   }
 }));
@@ -92,7 +96,8 @@ passport.deserializeUser(async (id: number, done) => {
   try {
     const user = await User.findByPk(id);
     done(null, user);
-  } catch (error) {
+  } catch (error: any) {
+    await digestError('Error in deserialize user', error);
     done(error);
   }
 });

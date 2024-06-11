@@ -14,6 +14,7 @@ dotenv.config({ path: envPath });
 
 import express from 'express';
 import swaggerUi from 'swagger-ui-express';
+import cors from 'cors';
 
 import docsRouter from './api/docs';
 import userCreate from './api/user/create';
@@ -25,6 +26,7 @@ import facebookAuthRouter from './api/user/auth/facebook';
 import profilRouter from './api/user/profile';
 import { logRequest } from './utils/logRequest';
 import weatherRouter from './api/weather/info';
+import { digestError } from './service/logger';
 
 
 // Initialize Express
@@ -35,6 +37,7 @@ const host = process.env.HOST || '0.0.0.0';
 // Middlewares
 
 // CORS
+app.use(cors());
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*'); // Replace '*' with your allowed origins
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
@@ -76,8 +79,8 @@ const start = async () => {
     app.listen(PORT, host, () => {
       console.log(`Server is running on port ${PORT}`);
     });
-  } catch (error) {
-    console.error('Unable to start server:', error);
+  } catch (error: any) {
+    await digestError('Failed to start the server', error);
   }
 };
 
