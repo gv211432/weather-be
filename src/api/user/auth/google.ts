@@ -10,6 +10,9 @@ const router = Router();
  * /api/user/auth/google:
  *   get:
  *     summary: Authenticate with Google
+ *     description: |
+ *      Redirects to Google for authentication. Here in swagger docs, it doesn't redirect to Google.
+ *      Open this link <a href="/api/user/auth/google" target="_blank" >Google Auth</a> to authenticate with Google.
  *     tags: [Auth]
  *     responses:
  *       302:
@@ -21,8 +24,8 @@ router.get('/user/auth/google', passport.authenticate('google', { scope: ['profi
  * @swagger
  * /api/user/auth/google/callback:
  *   get:
- *     summary: Google authentication callback
- *     tags: [Auth]
+ *     summary: Google authentication callback, used by Google to redirect back to the application.
+ *     tags: [Auth Validation]
  *     responses:
  *       302:
  *         description: |
