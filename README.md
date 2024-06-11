@@ -130,7 +130,7 @@ To run the project in developer mode, follow these steps:
 
 ![Check Auth Status](./docs/img/profile.jpg)
 
-4. ### Check the weather information for a specific city by entering the city name in the search bar.
+4. ### Check the weather information for a region:
    - Once you are logged in, you can get the weather information
    - You can specify the longitude and latitude of the city to get the weather information.
    - If not specified, the weather information will be fetched based on the user's ip address.
