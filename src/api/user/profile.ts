@@ -26,9 +26,6 @@ const router = Router();
  */
 router.get('/user/profile', auth, async (req, res) => {
   try {
-    console.log({ ip: getClientIp(req) });
-    console.log({ info: await getIpInfo(getClientIp(req)) });
-
     return res.json({ message: 'Authenticated', data: req.user });
   } catch (error: any) {
     await digestError('Error getting user profile', error);

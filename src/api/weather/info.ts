@@ -41,7 +41,6 @@ const router = Router();
 router.get('/weather/info', auth, async (req, res) => {
   try {
     const { lat, lon } = req.query;
-    console.log({ lat, lon });
     const apiKey = process.env.WEATHER_API_KEY;
     let weatherApiUrl = "";
     let location: IpInfo | null = null;
@@ -51,7 +50,6 @@ router.get('/weather/info', auth, async (req, res) => {
     } else {
       location = await getIpInfo(getClientIp(req));
       if (!location) throw new Error('Location not found');
-
       weatherApiUrl = `${process.env.WEATHER_BASE_URL}/data/2.5/weather?q=${location?.city},${location?.country}&appid=${apiKey}`;
     }
 
