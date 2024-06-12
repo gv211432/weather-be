@@ -2,6 +2,7 @@ import { Router, Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import User from '../../models/User';
 import { digestError } from '../../service/logger';
+import { filterUser } from '../../utils/user';
 const router = Router();
 
 /**
@@ -56,7 +57,7 @@ router.post('/user/create', async (req: Request, res: Response) => {
     if (!newUser) {
       return res.json({ error: "Error registering user" });
     }
-    return res.json({ message: 'User registered successfully', data: user });
+    return res.json({ message: 'User registered successfully', data: filterUser(newUser) });
   } catch (error: any) {
     await digestError("Error registering user", error);
     return res.json({ error: "Error registering user" });
